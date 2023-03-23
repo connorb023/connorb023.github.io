@@ -17,11 +17,17 @@ $(document).ready(function() {
           $("#category-select").append(option);
         });
       },
- // Add an event listener to the category dropdown menu
+      error: function() {
+        // Handle any errors that occur while making the request
+        console.log("Error: Unable to retrieve quiz categories.");
+      }
+    });
+  
+    // Add an event listener to the category dropdown menu
     $("#category-select").on("change", function() {
       // Get the selected category ID
       categoryId = $(this).val();
-
+  
       // Clear any existing questions from the DOM
       $("main").empty();
   
@@ -41,13 +47,15 @@ $(document).ready(function() {
         success: function(response) {
           // Handle the response from the API
           let questions = response.results;
- // Add each question to the DOM
+  
+          // Add each question to the DOM
           questions.forEach(function(question, index) {
             let questionDiv = $("<div>").addClass("question");
             let questionNumber = $("<h2>").text("Question " + (index + 1));
             let questionText = $("<p>").addClass("question-text").html(question.question);
             let answersList = $("<ul>").addClass("answers");
-   // Add each answer to the answer list
+  
+            // Add each answer to the answer list
             let answers = question.incorrect_answers.concat(question.correct_answer);
             answers.sort(); // Shuffle the answers so that the correct answer is not always last
             answers.forEach(function(answer) {
@@ -73,7 +81,7 @@ $(document).ready(function() {
             $("main").append(questionDiv);
           });
         },
-error: function() {
+        error: function() {
           // Handle any errors that occur while making the request
           console.log("Error: Unable to retrieve quiz questions.");
         }
@@ -97,7 +105,8 @@ error: function() {
           wrongAnswers.push(answerText);
         }
       });
- // Calculate the percentage score
+      
+      // Calculate the percentage score
       let numCorrect = 10 - wrongAnswers.length;
       percentageScore = numCorrect / 10 * 100;
       
